@@ -14,6 +14,16 @@ function App() {
 
   const { users, isloading, error } = UseGetUsers();
 
+  const handleEditConfirm = async (id: number | string): Promise<void> => {
+    try {
+    } catch (error) {}
+  };
+
+  const handleDeleteConfirm = async (id: number | string): Promise<void> => {
+    try {
+    } catch (error) {}
+  };
+
   const openModal = (action: ActionType, user: IUser) => {
     setIsModalOpen(true);
     setModalAction(action);

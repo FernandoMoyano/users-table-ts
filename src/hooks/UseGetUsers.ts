@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { transformResponse } from "../utils/transformResponse";
 import { IUser } from "../interfaces/IUser";
+import { getUsers } from "../api/userApi";
 
 const UseGetUsers = () => {
   //estados para la carga inicial de datos___________
@@ -10,18 +11,12 @@ const UseGetUsers = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUsers = async (): Promise<IUser[]> => {
+    const fetchUsers = async (): Promise<void> => {
       try {
-        const response = await fetch("http://localhost:4000/users");
-        setIsLoading(true);
-
-        if (!response.ok) {
-          throw new Error(`Error al obtener los datos${response.statusText} `);
-        }
-        const users: IUser[] = await response.json();
+        const users = await getUsers();
         const usersTransformed = transformResponse(users);
         setUsers(usersTransformed);
-        return users;
+        setError(null);
       } catch (error) {
         console.error(`Error `, error);
         setError(error instanceof Error ? error.message : "Uknown error");
