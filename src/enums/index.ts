@@ -1,5 +1,1 @@
-export enum ActionModal {
-  EDIT = "edit",
-  DELETE = "delete",
-  NULL = "null",
-}
+export type ActionModal = "edit" | "delete" | null;

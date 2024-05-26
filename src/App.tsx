@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { IUser, Status } from "./interfaces/IUser";
+import { ActionType, IUser, Status } from "./interfaces/IUser";
 import { transformResponse } from "./utils/transformResponse";
 import { Modal, Space, Table, Tag } from "antd";
 import { TableProps } from "antd/es/table";
-import { ActionModal } from "./enums";
+import { ActionModal } from "./enums/index";
 
 function App() {
   //estados para la carga inicial de datos___________
@@ -37,21 +37,18 @@ function App() {
     fetchUsers();
   }, []);
 
-  //estados para el modal de edición______________
+  //estados para el modal______________
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
-  const [modalAction, setModalAction] = useState<ActionModal>(ActionModal.NULL);
+  const [modalAction, setModalAction] = useState<ActionModal>(null);
 
-  //const handleConfirmEdit = () => {};
-  //const handleConfirmDelete = () => {};
-
-  const handleModal = (action?: ActionModal, user?: IUser) => {
-    if (action && user) {
-      setIsModalOpen(true);
-      setCurrentUser(user);
-      setModalAction(action);
-    }
+  const openModal = (user: IUser, action: ActionModal) => {
+    setIsModalOpen(true);
+    setModalAction(action);
+    setCurrentUser(user);
   };
+
+  const handleModalResponse = () => {};
 
   //Columnas de la tabla_____________
   const columns: TableProps<IUser>["columns"] = [
@@ -92,8 +89,8 @@ function App() {
       key: "acciones",
       render: (_, record) => (
         <Space size='middle'>
-          <a onClick={() => handleModal(ActionModal.EDIT, record)}>Edit</a>
-          <a onClick={() => handleModal(ActionModal.DELETE, record)}>Delete</a>
+          <a onClick={() => openModal(ActionType.Edit, record)}>Edit</a>
+          <a onClick={() => handleModal(ActionType.Delete, record)}>Delete</a>
         </Space>
       ),
     },
@@ -108,7 +105,7 @@ function App() {
           rowKey='id'
           size='middle'></Table>
       )}
-      {currentUser && (
+      {currentUser && modalAction && (
         <Modal
           open={isModalOpen}
           onOk={() => handleModal}
