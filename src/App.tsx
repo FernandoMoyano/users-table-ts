@@ -5,7 +5,7 @@ import { Modal, Space, Table, Tag } from "antd";
 import { TableProps } from "antd/es/table";
 import { ActionType, ResponseType, Status } from "./enums";
 import UseGetUsers from "./hooks/UseGetUsers";
-import { updateUser } from "./api/userApi";
+import { deleteUser, updateUser } from "./api/userApi";
 
 function App() {
   //estados para el modal______________
@@ -17,9 +17,11 @@ function App() {
 
   const [data, setData] = useState<IUser[]>(users);
 
+  //confirmación de Edición_____________
   const handleConfirmEdit = async (updatedUser: IUser): Promise<void> => {
     try {
       const user = await updateUser(updatedUser);
+
       setData((prevUsers) =>
         prevUsers.map((u) => (u.id === user.id ? user : u))
       );
@@ -28,8 +30,38 @@ function App() {
     }
   };
 
-  const handleConfirmDelete = () => {};
+  //Confirmación de eliminación__________________
+  const handleConfirmDelete = async (id: string | number): Promise<void> => {
+    try {
+      await deleteUser(id);
 
+      setData((prevUsers) => prevUsers.filter((u) => u.id !== id));
+    } catch (error) {
+      console.error("Error al eliminar usuario", error);
+    }
+  };
+
+  //Respuesta del Usuario frente al modal_________________
+  const handleModalResponse = async (response: ResponseType) => {
+    if (currentUser && modalAction) {
+      if (response === ResponseType.Confirm) {
+        switch (modalAction) {
+          case ActionType.Edit:
+            await handleConfirmEdit(currentUser);
+            break;
+
+          case ActionType.Delete:
+            await handleConfirmDelete(currentUser.id);
+            break;
+        }
+      }
+      setIsModalOpen(false);
+      setCurrentUser(null);
+      setModalAction(null);
+    }
+  };
+
+  //Manejo de la apertura o cierre del modal___________________
   const openModal = (action: ActionType, user: IUser) => {
     setIsModalOpen(true);
     setModalAction(action);
