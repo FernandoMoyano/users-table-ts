@@ -41,16 +41,41 @@ export const deleteUser = async (id: number | string): Promise<void> => {
 };
 
 //UPDATE-users___________________________________
-export const updateUser = async (updatedUser: IUser): Promise<void> => {
+export const updateUser = async (updatedUser: IUser): Promise<IUser> => {
   try {
     const response = await fetch(`${baseUrl}/${updatedUser.id}`, {
       method: "PUT",
       headers: headers,
+      body: JSON.stringify(updatedUser),
     });
 
     if (!response.ok) {
       throw new Error(`Error al eliminar usuario:${response.statusText}`);
     }
+    const data: IUser = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+//POST User_____________________________
+export const addUser = async (newUser: IUser): Promise<IUser> => {
+  try {
+    const response = await fetch(baseUrl, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(newUser),
+    });
+
+    if (!response.ok) {
+      throw new Error(`No se puede agregar el usuario ${response.statusText}`);
+    }
+
+    const newUserAdded = await response.json();
+
+    return newUserAdded;
   } catch (error) {
     console.error(error);
     throw error;

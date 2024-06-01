@@ -3,8 +3,9 @@ import "./App.css";
 import { IUser } from "./interfaces/IUser";
 import { Modal, Space, Table, Tag } from "antd";
 import { TableProps } from "antd/es/table";
-import { ActionType, Status } from "./enums";
+import { ActionType, ResponseType, Status } from "./enums";
 import UseGetUsers from "./hooks/UseGetUsers";
+import { updateUser } from "./api/userApi";
 
 function App() {
   //estados para el modal______________
@@ -14,23 +15,26 @@ function App() {
 
   const { users, isloading, error } = UseGetUsers();
 
-  const handleEditConfirm = async (id: number | string): Promise<void> => {
+  const [data, setData] = useState<IUser[]>(users);
+
+  const handleConfirmEdit = async (updatedUser: IUser): Promise<void> => {
     try {
-    } catch (error) {}
+      const user = await updateUser(updatedUser);
+      setData((prevUsers) =>
+        prevUsers.map((u) => (u.id === user.id ? user : u))
+      );
+    } catch (error) {
+      console.error("Error al actualizar usuario", error);
+    }
   };
 
-  const handleDeleteConfirm = async (id: number | string): Promise<void> => {
-    try {
-    } catch (error) {}
-  };
+  const handleConfirmDelete = () => {};
 
   const openModal = (action: ActionType, user: IUser) => {
     setIsModalOpen(true);
     setModalAction(action);
     setCurrentUser(user);
   };
-
-  const handleModalResponse = () => {};
 
   //Columnas de la tabla_____________
   const columns: TableProps<IUser>["columns"] = [
@@ -84,7 +88,7 @@ function App() {
     <>
       {!isloading && !error && (
         <Table
-          dataSource={users}
+          dataSource={data}
           columns={columns}
           rowKey='id'
           size='middle'></Table>
@@ -92,8 +96,8 @@ function App() {
       {currentUser && modalAction && (
         <Modal
           open={isModalOpen}
-          onOk={() => handleModalResponse()}
-          onCancel={() => handleModalResponse()}
+          onOk={() => handleModalResponse(ResponseType.Confirm)}
+          onCancel={() => handleModalResponse(ResponseType.Cancel)}
         />
       )}
     </>
