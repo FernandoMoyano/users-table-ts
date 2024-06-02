@@ -1,6 +1,6 @@
 import { IUser } from "../interfaces/IUser";
 
-const baseUrl = "htpp://localhost:4000/users";
+const baseUrl = "http://localhost:4000/users";
 const headers = {
   "Content-Type": "application/json",
 };

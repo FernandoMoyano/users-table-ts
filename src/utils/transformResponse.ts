@@ -1,6 +1,6 @@
-import { User } from "../interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 
-export const transformResponse = (users: User[]): User[] => {
+export const transformResponse = (users: IUser[]): IUser[] => {
   if (!users) {
     return [];
   }

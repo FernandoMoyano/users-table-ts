@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { IUser } from "./interfaces/IUser";
 import { Modal, Space, Table, Tag } from "antd";
@@ -6,16 +6,16 @@ import { TableProps } from "antd/es/table";
 import { ActionType, ResponseType, Status } from "./enums";
 import UseGetUsers from "./hooks/UseGetUsers";
 import { deleteUser, updateUser } from "./api/userApi";
+import { UseModal } from "./hooks/UseModal";
 
 function App() {
-  //estados para el modal______________
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
-  const [modalAction, setModalAction] = useState<ActionType | null>(null);
-
+  //Estados_____________________________
   const { users, isloading, error } = UseGetUsers();
-
   const [data, setData] = useState<IUser[]>(users);
+
+  useEffect(() => {
+    setData(users);
+  }, [users]);
 
   //confirmación de Edición_____________
   const handleConfirmEdit = async (updatedUser: IUser): Promise<void> => {
@@ -41,32 +41,10 @@ function App() {
     }
   };
 
-  //Respuesta del Usuario frente al modal_________________
-  const handleModalResponse = async (response: ResponseType) => {
-    if (currentUser && modalAction) {
-      if (response === ResponseType.Confirm) {
-        switch (modalAction) {
-          case ActionType.Edit:
-            await handleConfirmEdit(currentUser);
-            break;
-
-          case ActionType.Delete:
-            await handleConfirmDelete(currentUser.id);
-            break;
-        }
-      }
-      setIsModalOpen(false);
-      setCurrentUser(null);
-      setModalAction(null);
-    }
-  };
-
-  //Manejo de la apertura o cierre del modal___________________
-  const openModal = (action: ActionType, user: IUser) => {
-    setIsModalOpen(true);
-    setModalAction(action);
-    setCurrentUser(user);
-  };
+  const { modalState, openModal, handleModalResponse } = UseModal(
+    handleConfirmEdit,
+    handleConfirmDelete
+  );
 
   //Columnas de la tabla_____________
   const columns: TableProps<IUser>["columns"] = [
@@ -109,8 +87,8 @@ function App() {
 
       render: (_, record) => (
         <Space size='middle'>
-          <a onClick={() => openModal(ActionType.Edit, record)}>Edit</a>
-          <a onClick={() => openModal(ActionType.Delete, record)}>Delete</a>
+          <a onClick={() => openModal(record, ActionType.Edit)}>Edit</a>
+          <a onClick={() => openModal(record, ActionType.Delete)}>Delete</a>
         </Space>
       ),
     },
@@ -125,9 +103,9 @@ function App() {
           rowKey='id'
           size='middle'></Table>
       )}
-      {currentUser && modalAction && (
+      {modalState.isOpen && (
         <Modal
-          open={isModalOpen}
+          open={modalState.isOpen}
           onOk={() => handleModalResponse(ResponseType.Confirm)}
           onCancel={() => handleModalResponse(ResponseType.Cancel)}
         />
