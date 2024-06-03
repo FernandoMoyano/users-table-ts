@@ -11,11 +11,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/uuid": "^9.0.8",
     "antd": "^5.17.3",
     "json-server": "^1.0.0-beta.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

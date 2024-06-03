@@ -10,7 +10,8 @@ interface ModalState {
 
 export const UseModal = (
   onEdit: (user: IUser) => Promise<void>,
-  onDelete: (id: string | number) => Promise<void>
+  onDelete: (id: string | number) => Promise<void>,
+  onAdd: (user: IUser) => Promise<void>
 ) => {
   const [modalState, setModalState] = useState<ModalState>({
     user: null,
@@ -26,16 +27,24 @@ export const UseModal = (
     setModalState({ user: null, action: null, isOpen: false });
   };
 
-  const handleModalResponse = async (response: ResponseType) => {
+  const handleModalResponse = async (response: ResponseType, user?: IUser) => {
     if (modalState.user && modalState.action) {
       if (response === ResponseType.Confirm) {
         switch (modalState.action) {
           case ActionType.Edit:
             await onEdit(modalState.user);
             break;
+
           case ActionType.Delete:
             await onDelete(modalState.user.id);
             break;
+
+          case ActionType.Add:
+            if (user) {
+              await onAdd(user);
+            }
+            break;
+
           default:
             break;
         }

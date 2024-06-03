@@ -6,6 +6,7 @@ export enum Status {
 export enum ActionType {
   Edit = "edit",
   Delete = "delete",
+  Add = "add",
 }
 
 export enum ResponseType {
