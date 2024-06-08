@@ -30,10 +30,16 @@ const UserEditModal: React.FC<UserEditModalProps> = ({
   };
 
   return (
-    <Modal open={open} title='Edit User' onCancel={onCancel} onOk={handleOk}>
+    <Modal
+      open={open}
+      title='Edit User'
+      onCancel={onCancel}
+      onOk={handleOk}
+      okText='Edit'
+      centered>
       <Form
         form={form}
-        layout='vertical'
+        layout='horizontal'
         initialValues={user}
         onValuesChange={handleChange}>
         <Form.Item

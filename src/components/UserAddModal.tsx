@@ -40,7 +40,12 @@ const UserAddModal: React.FC<IUserAddModalProps> = ({
   };
 
   return (
-    <Modal open={open} title='Add user' onCancel={onCancel} onOk={handleOk}>
+    <Modal
+      open={open}
+      title='Add user'
+      onCancel={onCancel}
+      onOk={handleOk}
+      centered>
       <Form
         form={form}
         initialValues={initialFormValues}

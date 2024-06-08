@@ -8,6 +8,7 @@ import { ActionType, ResponseType, Status } from "../enums";
 import { v4 as uuidv4 } from "uuid";
 import UserAddModal from "./UserAddModal";
 import UserEditModal from "./UserEditModal";
+import UserDeleteModal from "./UserDeleteModal";
 
 const UserTable = () => {
   //Estados_____________________________
@@ -128,6 +129,14 @@ const UserTable = () => {
           open={modalState.isOpen}
           user={modalState.user}
           onOk={(user) => handleModalResponse(ResponseType.Confirm, user)}
+          onCancel={closeModal}
+        />
+      )}
+      {modalState.action === ActionType.Delete && modalState.user && (
+        <UserDeleteModal
+          open={modalState.isOpen}
+          user={modalState.user}
+          onOk={() => handleModalResponse(ResponseType.Confirm)}
           onCancel={closeModal}
         />
       )}
