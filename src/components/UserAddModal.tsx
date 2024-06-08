@@ -8,7 +8,7 @@ import { Option } from "antd/es/mentions";
 interface IUserAddModalProps {
   open: boolean;
   onCancel: () => void;
-  onOk: (user: IUser | null) => void;
+  onOk: (user: IUser) => void;
 }
 
 const UserAddModal: React.FC<IUserAddModalProps> = ({

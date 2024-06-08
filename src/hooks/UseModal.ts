@@ -3,7 +3,7 @@ import { ActionType, ResponseType } from "../enums";
 import { IUser } from "../interfaces/IUser";
 
 interface ModalState {
-  user: IUser | null;
+  user?: IUser | null;
   action: ActionType | null;
   isOpen: boolean;
 }
@@ -30,15 +30,17 @@ export const UseModal = (
   const handleModalResponse = async (response: ResponseType, user?: IUser) => {
     if (modalState.user && modalState.action) {
       if (response === ResponseType.Confirm) {
+        /* evaluación de la acción */
         switch (modalState.action) {
+          /* Edición */
           case ActionType.Edit:
-            await onEdit(modalState.user);
+            await onEdit({ ...modalState.user, ...user });
             break;
-
+          /* Eliminación */
           case ActionType.Delete:
             await onDelete(modalState.user.id);
             break;
-
+          /* Agregado */
           case ActionType.Add:
             if (user) {
               await onAdd(user);

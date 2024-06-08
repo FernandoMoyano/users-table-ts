@@ -3,9 +3,11 @@ import UseGetUsers from "../hooks/UseGetUsers";
 import { IUser } from "../interfaces/IUser";
 import { addUser, deleteUser, updateUser } from "../api/userApi";
 import { UseModal } from "../hooks/UseModal";
-import { Modal, Space, Table, TableProps, Tag } from "antd";
+import { Space, Table, TableProps, Tag } from "antd";
 import { ActionType, ResponseType, Status } from "../enums";
 import { v4 as uuidv4 } from "uuid";
+import UserAddModal from "./UserAddModal";
+import UserEditModal from "./UserEditModal";
 
 const UserTable = () => {
   //Estados_____________________________
@@ -51,7 +53,7 @@ const UserTable = () => {
     }
   };
 
-  const { modalState, openModal, handleModalResponse } = UseModal(
+  const { modalState, openModal, closeModal, handleModalResponse } = UseModal(
     handleConfirmEdit,
     handleConfirmDelete,
     handleConfirmAdd
@@ -114,11 +116,19 @@ const UserTable = () => {
           rowKey='id'
           size='middle'></Table>
       )}
-      {modalState.user && modalState.isOpen && (
-        <Modal
+      {modalState.action === ActionType.Add && (
+        <UserAddModal
           open={modalState.isOpen}
-          onOk={() => handleModalResponse(ResponseType.Confirm)}
-          onCancel={() => handleModalResponse(ResponseType.Cancel)}
+          onOk={(user) => handleModalResponse(ResponseType.Confirm, user)}
+          onCancel={closeModal}
+        />
+      )}
+      {modalState.action === ActionType.Edit && modalState.user && (
+        <UserEditModal
+          open={modalState.isOpen}
+          user={modalState.user}
+          onOk={(user) => handleModalResponse(ResponseType.Confirm, user)}
+          onCancel={closeModal}
         />
       )}
     </>
